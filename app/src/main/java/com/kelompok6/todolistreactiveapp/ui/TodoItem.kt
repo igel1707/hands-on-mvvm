@@ -26,7 +26,7 @@ fun TodoItem(
 ) {
     val fmt = remember { SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()) }
     val created = fmt.format(Date(todo.createdAt))
-111111
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
