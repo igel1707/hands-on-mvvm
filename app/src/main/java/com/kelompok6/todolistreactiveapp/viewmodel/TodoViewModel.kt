@@ -19,11 +19,11 @@ class TodoViewModel : ViewModel() {
         _filter.value = f
     }
 
-    // Add deadline parameter (epoch millis) optional
-    fun addTask(title: String, deadline: Long? = null) {
+    // addTask without deadline
+    fun addTask(title: String) {
         val nextId = (_todos.value.maxOfOrNull { it.id } ?: 0) + 1
         val now = System.currentTimeMillis()
-        val newTask = Todo(id = nextId, title = title, createdAt = now, deadline = deadline)
+        val newTask = Todo(id = nextId, title = title, createdAt = now)
         _todos.value = _todos.value + newTask
     }
     fun toggleTask(id: Int) {

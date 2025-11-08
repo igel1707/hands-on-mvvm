@@ -4,6 +4,5 @@ data class Todo(
     val id: Int,
     val title: String,
     val isDone: Boolean = false,
-    val createdAt: Long = System.currentTimeMillis(),
-    val deadline: Long? = null
+    val createdAt: Long = System.currentTimeMillis()
 )

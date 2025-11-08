@@ -35,6 +35,7 @@ fun TodoScreen(vm: TodoViewModel = viewModel()) {
             label = { Text("Tambah tugas...") },
             modifier = Modifier.fillMaxWidth()
         )
+
         Button(
             onClick = {
                 if (text.isNotBlank()) {
