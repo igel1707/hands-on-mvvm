@@ -8,9 +8,22 @@ import kotlinx.coroutines.flow.StateFlow
 class TodoViewModel : ViewModel() {
     private val _todos = MutableStateFlow<List<Todo>>(emptyList())
     val todos: StateFlow<List<Todo>> = _todos
-    fun addTask(title: String) {
+
+    // New: filter state
+    enum class TodoFilter { All, Active, Completed }
+
+    private val _filter = MutableStateFlow(TodoFilter.All)
+    val filter: StateFlow<TodoFilter> = _filter
+
+    fun setFilter(f: TodoFilter) {
+        _filter.value = f
+    }
+
+    // Add deadline parameter (epoch millis) optional
+    fun addTask(title: String, deadline: Long? = null) {
         val nextId = (_todos.value.maxOfOrNull { it.id } ?: 0) + 1
-        val newTask = Todo(id = nextId, title = title)
+        val now = System.currentTimeMillis()
+        val newTask = Todo(id = nextId, title = title, createdAt = now, deadline = deadline)
         _todos.value = _todos.value + newTask
     }
     fun toggleTask(id: Int) {

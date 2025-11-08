@@ -10,12 +10,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kelompok6.todolistreactiveapp.viewmodel.TodoViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kelompok6.todolistreactiveapp.viewmodel.TodoViewModel.TodoFilter
 
 
 @Composable
 fun TodoScreen(vm: TodoViewModel = viewModel()) {
     val todos by vm.todos.collectAsState()
+    val filter by vm.filter.collectAsState()
     var text by rememberSaveable { mutableStateOf("") }
+
+    // compute filtered todos based on selected filter
+    val filteredTodos = remember(todos, filter) {
+        when (filter) {
+            TodoFilter.All -> todos
+            TodoFilter.Active -> todos.filter { !it.isDone }
+            TodoFilter.Completed -> todos.filter { it.isDone }
+        }
+    }
+
     Column(Modifier.padding(16.dp)) {
         OutlinedTextField(
             value = text,
@@ -32,9 +44,32 @@ fun TodoScreen(vm: TodoViewModel = viewModel()) {
             },
             modifier = Modifier.padding(vertical = 8.dp)
         ) { Text("Tambah") }
-        Divider()
+
+        // Filter controls
+        Row(Modifier.padding(vertical = 8.dp)) {
+            FilterChip(
+                selected = filter == TodoFilter.All,
+                onClick = { vm.setFilter(TodoFilter.All) },
+                label = { Text("Semua") },
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            FilterChip(
+                selected = filter == TodoFilter.Active,
+                onClick = { vm.setFilter(TodoFilter.Active) },
+                label = { Text("Aktif") },
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            FilterChip(
+                selected = filter == TodoFilter.Completed,
+                onClick = { vm.setFilter(TodoFilter.Completed) },
+                label = { Text("Selesai") }
+            )
+        }
+
+        // use HorizontalDivider (material3) to avoid deprecation
+        HorizontalDivider()
         LazyColumn {
-            items(todos) { todo ->
+            items(filteredTodos) { todo ->
                 TodoItem(
                     todo = todo,
                     onToggle = { vm.toggleTask(todo.id) },
